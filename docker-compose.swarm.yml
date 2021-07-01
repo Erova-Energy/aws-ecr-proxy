@@ -1,0 +1,19 @@
+services:
+  ecr-proxy:
+    logging:
+      driver: json-file
+    image: proreact/aws-ecr-proxy:1.21.0
+    ports:
+      - target: 443
+        published: 5000
+        protocol: tcp
+        mode: host
+    deploy:
+      endpoint_mode: dnsrr
+      mode: global
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first

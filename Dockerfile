@@ -18,7 +18,8 @@ ADD configs/nginx/*.conf /etc/nginx/
 ADD configs/*.sh /
 
 EXPOSE 80 443
-
+HEALTHCHECK --interval=1m --timeout=3s \
+  CMD curl -f http://localhost/ping || exit 1
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
