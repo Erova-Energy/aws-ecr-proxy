@@ -85,16 +85,10 @@ echo "Docker registry version is ${DOCKER_REGISTRY_VERSION}"
 cat /etc/nginx/nginx-docker-registry-v${DOCKER_REGISTRY_VERSION}.conf > ${nx_conf}
 
 # update the auth token
-if [ "$REGISTRY_ID" = "" ]
-then
-    aws_cli_exec=$(aws ecr get-login --no-include-email)
-else
-    aws_cli_exec=$(aws ecr get-login --no-include-email --registry-ids "${REGISTRY_ID}")
-fi
 auth=$(grep  X-Forwarded-User ${nx_conf} | awk '{print $4}'| uniq|tr -d "\n\r")
-token=$(echo "${aws_cli_exec}" | awk '{print $6}')
+token=$(aws ecr get-login-password)
 auth_n=$(echo "AWS:${token}"  | base64 |tr -d "[:space:]")
-reg_url=$(echo "${aws_cli_exec}" | awk '{print $7}')
+reg_url=$(aws ecr get-authorization-token --output=text --query "authorizationData[${AUTH_INDEX:-0}].proxyEndpoint")
 
 # We use a '.new' file to prevent errors like this one.
 #     'sed: can't move '/etc/nginx/nginx.confhgFhDa' to '/etc/nginx/nginx.conf': Resource busy'

@@ -20,7 +20,7 @@ usage () {
     printf "        The version of the Docker image to publish, default to the content of 'version.txt'.\n"
 }
 
-NAME=catalinpan/aws-ecr-proxy
+NAME=proreact/aws-ecr-proxy
 VERSION=$(cat version.txt)
 
 while [ $# -gt 0 ]

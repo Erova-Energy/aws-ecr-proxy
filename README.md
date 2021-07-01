@@ -2,9 +2,13 @@
 
 Based on official nginx alpine.
 
-[Docker image repository](https://hub.docker.com/r/catalinpan/aws-ecr-proxy/)
+[Docker image repository](https://hub.docker.com/r/proreact/aws-ecr-proxy/)
 
-The container will renew the AWS token every 6 hours.
+The container will renew the AWS token every 4 hours.
+
+Based off the work from this repo: https://github.com/catalinpan/aws-ecr-proxy
+Updated AWS CLI to v2+
+
 
 ### Variables
 
@@ -16,10 +20,8 @@ The following table describes the parameters you can provide as Docker environme
 | `AWS_SECRET`              |               | The AWS secret used to execute AWS ECR API requests.            |
 | `DOCKER_REGISTRY_VERSION` | 2             | The version of the Docker registry to use.                      |
 | `REGION`                  |               | The AWS region where your AWS ECR registries are located.       |
-| `RENEW_TOKEN`             | 6h            | The interval used to indicate how often to renew the AWS token. |
-| `REGISTRY_ID`             |               | Used for cross account access.                                  |
-
-
+| `RENEW_TOKEN`             | 4h            | The interval used to indicate how often to renew the AWS token. |
+| `AUTH_INDEX`              | 0             | The index in the authorizationData array to use.                |
 ### Health check
 
 To check the health of the container/registry use `FQDN/ping` which will give you the heath of the registry with the correct status code.
