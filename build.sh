@@ -40,4 +40,4 @@ do
     shift
 done
 
-docker build --no-cache --pull -t "${NAME}:${VERSION}" .
+docker build --pull -t "${NAME}:${VERSION}" .

@@ -1,6 +1,5 @@
 #!/bin/sh
 
-nx_conf=/etc/nginx/nginx.conf
 
 AWS_IAM='http://169.254.169.254/latest/dynamic/instance-identity/document'
 AWS_FOLDER='/root/.aws'
@@ -63,33 +62,15 @@ else
     exit 1
   fi
 fi
+REGISTRY_URL=$(aws ecr get-authorization-token --output=text --query "authorizationData[${AUTH_INDEX:-0}].proxyEndpoint")
+export REGISTRY_URL;
+export RESOLVER="${RESOLVER:-8.8.8.8 8.8.4.4}"
 
-# Check the Docker registry version to use
-if [ -z "${DOCKER_REGISTRY_VERSION}" ]; then
-  DOCKER_REGISTRY_VERSION=2
-elif [ "${DOCKER_REGISTRY_VERSION}" != "1" ] && [ "${DOCKER_REGISTRY_VERSION}" != "2" ]; then
-  echo "Docker registry version ${DOCKER_REGISTRY_VERSION} is invalid !"
-  exit 1
-fi
+echo "REGISTRY_URL: ${REGISTRY_URL}"
+echo "RESOLVER: ${RESOLVER}"
 
-# Pick the right NGinx configuration file
-echo "Docker registry version is ${DOCKER_REGISTRY_VERSION}"
-cat /etc/nginx/nginx-docker-registry-v${DOCKER_REGISTRY_VERSION}.conf >${nx_conf}
+/auth_update.sh
 
-# update the auth token
-auth=$(grep X-Forwarded-User ${nx_conf} | awk '{print $4}' | uniq | tr -d "\n\r")
-token=$(aws ecr get-login-password)
-auth_n=$(echo "AWS:${token}" | base64 | tr -d "[:space:]")
-reg_url=$(aws ecr get-authorization-token --output=text --query "authorizationData[${AUTH_INDEX:-0}].proxyEndpoint")
-
-# We use a '.new' file to prevent errors like this one.
-#     'sed: can't move '/etc/nginx/nginx.confhgFhDa' to '/etc/nginx/nginx.conf': Resource busy'
-cp ${nx_conf} ${nx_conf}.new
-sed -i "s|${auth%??}|${auth_n}|g" ${nx_conf}.new
-sed -i "s|REGISTRY_URL|${reg_url}|g" ${nx_conf}.new
-echo "" >${nx_conf}
-cat ${nx_conf}.new >${nx_conf}
-echo "REGISTRY_URL: ${reg_url}"
 
 /renew_token.sh &
 
