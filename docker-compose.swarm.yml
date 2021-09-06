@@ -1,8 +1,6 @@
 version: "3.8"
 services:
   ecr-proxy:
-    logging:
-      driver: json-file
     image: proreact/aws-ecr-proxy:1.21.3
     ports:
       - target: 443

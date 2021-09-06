@@ -115,6 +115,11 @@ Publish an image with a custom name and version.
 ./publish.sh --latest --name=company-name/aws-ecr-proxy --version=1.0.0
 ```
 
+### Deploying to a swarm cluster
+```
+docker stack deploy --compose-file ./docker-compose.swarm.yml ${serviceName}
+```
+Where serviceName is the name of the service, it could be `ecr-proxy`
 
 ## SSL
 The certificates included are just to get nginx started. Generate your own certificate, get valid ssl certificates or use the container behind a load balancer with valid SSL certificates.
