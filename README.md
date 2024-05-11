@@ -50,7 +50,7 @@ Check https://docs.docker.com/registry/insecure/ for more details.
 docker run -e AWS_SECRET='YOUR_AWS_SECRET' \
 -e AWS_KEY='YOUR_AWS_KEY' \
 -e REGION='YOUR_AWS_REGION' \
--d catalinpan/aws-ecr-proxy
+-d aws-ecr-proxy
 ```
 ##### With your own certificate
 ```
@@ -59,7 +59,7 @@ docker run -e AWS_SECRET='YOUR_AWS_SECRET' \
 -e REGION='YOUR_AWS_REGION' \
 -v `pwd`/YOUR_CERTIFICATE.key:/etc/nginx/ssl/default.key:ro \
 -v `pwd`/YOUR_CERTIFICATE.crt:/etc/nginx/ssl/default.crt:ro \
--d catalinpan/aws-ecr-proxy
+-d aws-ecr-proxy
 ```
 ##### With a valid AWS CLI configuration file
 The configuration should look like below example.
@@ -77,26 +77,26 @@ aws_secret_access_key = YOUR_AWS_SECRET
 docker run -v ~/.aws:/root/.aws:ro \
     -v `pwd`/YOUR_CERTIFICATE.key:/etc/nginx/ssl/default.key:ro \
     -v `pwd`/YOUR_CERTIFICATE.crt:/etc/nginx/ssl/default.crt:ro \
-    -d catalinpan/aws-ecr-proxy
+    -d aws-ecr-proxy
 ```
 ##### IAM role configured
 With region and credentials from IAM role.
 ```
-docker run -d catalinpan/aws-ecr-proxy
+docker run -d aws-ecr-proxy
 ```
 With region as environment variable and credentials from IAM role.
 ```
-docker run -e REGION='YOUR_AWS_REGION' -d catalinpan/aws-ecr-proxy
+docker run -e REGION='YOUR_AWS_REGION' -d aws-ecr-proxy
 ```
 
 ##### With an explicit Docker registry version
 ```
-docker run -d catalinpan/aws-ecr-proxy \
+docker run -d aws-ecr-proxy \
     -e DOCKER_REGISTRY_VERSION=1
 ```
 
 ### Build
-Build the default `catalinpan/aws-ecr-proxy` image with the version specified in the `version.txt` file.
+Build the default `aws-ecr-proxy` image with the version specified in the `version.txt` file.
 ```
 ./build.sh
 ```
@@ -106,7 +106,7 @@ Build an image with a custom name and version.
 ```
 
 ### Publish
-Publish the default `catalinpan/aws-ecr-proxy` image with the version specified in the `version.txt` file.
+Publish the default `aws-ecr-proxy` image with the version specified in the `version.txt` file.
 ```
 ./publish.sh --latest
 ```

@@ -5,9 +5,9 @@ services:
       context: .
     logging:
       driver: json-file
-    image: proreact/aws-ecr-proxy:1.21.1
+    image: aws-ecr-proxy:1.25
     ports:
-      - target: 443
+      - target: 80
         published: 5000
         protocol: tcp
         mode: host
@@ -20,9 +20,9 @@ services:
         delay: 10s
         order: start-first
     environment:
-      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-      REGION: eu-central-1
+      # AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      # AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      REGION: eu-west-1
       #RESOLVER: 169.254.169.253
       RENEW_TOKEN: 30s
     volumes:

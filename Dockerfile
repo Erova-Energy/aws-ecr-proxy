@@ -1,4 +1,4 @@
-FROM nginx:1.21.0
+FROM nginx:1.25
 # install glibc compatibility for alpine
 RUN apt-get update && apt-get install -y zip wget \
     && curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
@@ -13,13 +13,14 @@ RUN apt-get update && apt-get install -y zip wget \
 ENV AUTH_INDEX=0
 ENV DOCKER_REGISTRY_VERSION=2
 ENV RENEW_TOKEN=4h
-ADD configs/nginx/ssl /etc/nginx/ssl
-ADD configs/nginx/*.conf /etc/nginx/
+# ADD configs/nginx/ssl /etc/nginx/ssl
+ADD configs/nginx/nginx-docker-registry-*.conf /etc/nginx/
 ADD configs/*.sh /
 
-EXPOSE 80 443
+# EXPOSE 80 443
+EXPOSE 80
 HEALTHCHECK --interval=1m --timeout=3s \
-  CMD curl -f http://localhost/v2/ || exit 1
+    CMD curl -f http://localhost/v2/test || exit 1
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]

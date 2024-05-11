@@ -1,10 +1,11 @@
 version: "3.8"
 services:
   ecr-proxy:
-    image: proreact/aws-ecr-proxy:1.21.3
+    image: aws-ecr-proxy:1.25
     ports:
-      - target: 443
-        published: 5000
+      - target: 80
+        published: 5770
+        # host_ip: 127.0.0.1
         protocol: tcp
         mode: host
     deploy:
@@ -15,5 +16,21 @@ services:
         parallelism: 1
         delay: 10s
         order: stop-first
+      placement:
+        constraints:
+          - "node.role==manager"
     environment:
       RESOLVER: 169.254.169.253
+    secrets:
+      - source: ecr-registry-htpasswd
+        target: /etc/nginx/registry_htpasswd
+      - source: ecr-aws-config-ro
+        target: /root/.aws/config
+    # labels:
+    #   erova.swarm.runmode: "one-time"
+
+secrets:
+  ecr-registry-htpasswd:
+    external: true
+  ecr-aws-config-ro:
+    external: true
