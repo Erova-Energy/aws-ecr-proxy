@@ -2,12 +2,12 @@ version: "3.8"
 services:
   ecr-proxy:
     image: aws-ecr-proxy:1.25
-    ports:
-      - target: 80
-        published: 5770
-        # host_ip: 127.0.0.1
-        protocol: tcp
-        mode: host
+    # ports:
+    #   - target: 80
+    #     published: 5700
+    #     # host_ip: 127.0.0.1
+    #     protocol: tcp
+    #     mode: host
     deploy:
       mode: global
       restart_policy:
@@ -19,6 +19,20 @@ services:
       placement:
         constraints:
           - "node.role==manager"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.ecrproxy.service=ecrproxy"
+        - "traefik.http.routers.ecrproxy.entrypoints=websecure"
+        - "traefik.http.routers.ecrproxy.rule=Host(`ecrproxy.erova.io`)"
+        - "traefik.http.services.ecrproxy.loadbalancer.server.port=80"
+
+        - "traefik.http.routers.ecrproxy2.service=ecrproxy2"
+        - "traefik.http.routers.ecrproxy2.entrypoints=webecrproxy"
+        - "traefik.http.routers.ecrproxy2.rule=Host(`utils.erova.io`)"
+        - "traefik.http.services.ecrproxy2.loadbalancer.server.port=80"
+
+        - "traefik.docker.network=utils"
+ 
     environment:
       RESOLVER: 169.254.169.253
     secrets:
@@ -28,9 +42,15 @@ services:
         target: /root/.aws/config
     # labels:
     #   erova.swarm.runmode: "one-time"
+    networks:
+      - utils
 
 secrets:
   ecr-registry-htpasswd:
     external: true
   ecr-aws-config-ro:
     external: true
+
+networks:
+    utils:
+        external: true
